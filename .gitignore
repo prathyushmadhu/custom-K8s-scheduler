@@ -1,33 +1,21 @@
-HELP.md
+# secrets
+
+*.key
+*.crt
+*.pem
+*.csr
+*.pfx
+*.p12
+
+# local dependency installations
+dependency-reduced-pom.xml
+pom.xml.tag
+pom.xml.releaseBackup
+release.properties
+
+# maven specific files
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
+*.class
+.mvn/
+.mvnw
+.mvnw.cmd

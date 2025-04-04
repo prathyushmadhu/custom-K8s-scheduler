@@ -1,0 +1,57 @@
+apiVersion: apps/v1 #common version for deployment
+kind: Deployment  # type of resource
+metadata:         # metadata of the deployment
+  name: custom-k8s-scheduler  # name of the deployment
+  labels: 
+    app: custom-scheduler     # label of the deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: custom-scheduler    # pods of this label will be maintained by deployment
+  template: 
+    metadata: 
+      labels:
+        app: custom-scheduler  # template for pods under this deployment [should match with selector]
+    spec: 
+      serviceAccountName: custom-scheduler-sa
+      containers:
+      - name: custom-k8s-scheduler
+        image: prathyushmadhu/sedai:1.4
+        ports:
+        - containerPort: 8443
+        args:
+        - "--scheduler-name=custom-scheduler" 
+        env:
+        - name: SERVER_PORT
+          value: "8443"
+        - name: TLS_KEYSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: custom-k8s-scheduler-tls
+              key: tls-password
+        volumeMounts:
+          - name: tls-volume
+            mountPath: "/etc/tls"
+            readOnly: true
+      volumes:
+        - name: tls-volume
+          secret:
+            secretName: custom-k8s-scheduler-tls
+    
+
+---
+# service exposing
+apiVersion: v1
+kind: Service
+metadata:
+  name: custom-k8s-scheduler
+  namespace: default
+spec:
+  selector:
+    app: custom-scheduler   # matches pods with this label
+  ports:
+    - protocol: TCP
+      port: 443             # (443)incoming traffic first hit 80
+      targetPort: 8443      # pods are running on this port
+                           # custom-k8s-scheduler.default.svc:80
